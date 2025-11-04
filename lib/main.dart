@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:u3_practica2_controlasistencia/programa.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: programa(),
+    debugShowCheckedModeBanner: false,
+  ));
 }
 
 class MyApp extends StatelessWidget {
