@@ -11,6 +11,7 @@ class _ProfesorPageState extends State<ProfesorPage> {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      padding: EdgeInsets.all(30),
       children: [
         Text("Profesor")
       ],
