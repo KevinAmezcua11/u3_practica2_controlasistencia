@@ -98,8 +98,290 @@ class _programaState extends State<programa> {
 
       case 2:
         return ListView(
+          padding: EdgeInsets.all(25),
           children: [
-            Text("Home")
+            Text("Bienvenido al sistema de control de asistencia",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            SizedBox(height: 5,),
+            Divider(),
+            SizedBox(height: 5,),
+
+            Text("Gestiona toda la información fácilmente desde un solo lugar.",
+              style: TextStyle(
+                fontSize: 16
+              ),
+            ),
+
+            SizedBox(height: 10,),
+
+            Card(
+              color: Colors.white,
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Ver materias",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text("Consulta y edita",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              index = 0;
+                            });
+                          },
+                          icon: CircleAvatar(
+                            backgroundColor: Colors.grey[200],
+                            child: Icon(
+                              Icons.arrow_forward_outlined,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Container(
+                      width: 140,
+                      height: 100,
+                      child: IconButton(
+                        onPressed: (){
+                          setState(() {
+                            index = 0;
+                          });
+                        },
+                          icon: Image.asset("assets/materias.png",
+                            width: 75,
+                            height: 75,
+                          ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 8,),
+            Card(
+              color: Colors.white,
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Ver horarios",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text("Consulta y modifica",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              index = 1;
+                            });
+                          },
+                          icon: CircleAvatar(
+                            backgroundColor: Colors.grey[200],
+                            child: Icon(
+                              Icons.arrow_forward_outlined,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Container(
+                      width: 140,
+                      height: 100,
+                      child: IconButton(
+                        onPressed: (){
+                          setState(() {
+                            index = 1;
+                          });
+                        },
+                        icon: Image.asset("assets/horario.png",
+                          width: 85,
+                          height: 85,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 8,),
+            Card(
+              color: Colors.white,
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Ver profesores",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text("Consulta y actualiza",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              index = 3;
+                            });
+                          },
+                          icon: CircleAvatar(
+                            backgroundColor: Colors.grey[200],
+                            child: Icon(
+                              Icons.arrow_forward_outlined,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Container(
+                      width: 140,
+                      height: 100,
+                      child: IconButton(
+                        onPressed: (){
+                          setState(() {
+                            index = 3;
+                          });
+                        },
+                        icon: Image.asset("assets/profesor.png",
+                          width: 85,
+                          height: 85,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 8,),
+            Card(
+              color: Colors.white,
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Ver asistencias",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text("Consulta y registra",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              index = 4;
+                            });
+                          },
+                          icon: CircleAvatar(
+                            backgroundColor: Colors.grey[200],
+                            child: Icon(
+                              Icons.arrow_forward_outlined,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    Container(
+                      width: 140,
+                      height: 100,
+                      child: IconButton(
+                        onPressed: (){
+                          setState(() {
+                            index = 4;
+                          });
+                        },
+                        icon: Image.asset("assets/asistencia.png",
+                          width: 85,
+                          height: 85,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            SizedBox(height: 10,),
+
+            Text("Consultas",
+              style: TextStyle(
+                fontSize: 16
+              ),
+            ),
           ],
         );
 
@@ -108,7 +390,7 @@ class _programaState extends State<programa> {
 
       case 4:
         return AsistenciaPage();
-        
+
       default:
         return Center(child: Text("No existe esta página."),);
     }

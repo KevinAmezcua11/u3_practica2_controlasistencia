@@ -1,11 +1,11 @@
 class Asistencia {
-  int IDASISTENCIA;
+  int? IDASISTENCIA;
   int NHORARIO;
   String FECHA;
-  bool ASISTENCIA;
+  int ASISTENCIA;
 
   Asistencia({
-    required this.IDASISTENCIA,
+    this.IDASISTENCIA,
     required this.NHORARIO,
     required this.FECHA,
     required this.ASISTENCIA
@@ -13,7 +13,6 @@ class Asistencia {
 
   Map<String, dynamic> toJSON() {
     return {
-      'IDASISTENCIA': IDASISTENCIA,
       'NHORARIO': NHORARIO,
       'FECHA': FECHA,
       'ASISTENCIA': ASISTENCIA
