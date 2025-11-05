@@ -25,16 +25,21 @@ class DB {
               "DESCRIPCION TEXT"
               ")");
 
-          await db.execute("CREATE TABLE HORARIO("
-              "NHORARIO INTEGER PRIMARY KEY AUTOINCREMENT,"
-              "NPROFESOR TEXT,"
-              "NMAT TEXT,"
-              "HORA TEXT,"
-              "EDIFICIO TEXT,"
-              "SALON TEXT,"
-              "FOREIGN KEY (NPROFESOR) REFERENCES PROFESOR(NPROFESOR) ON DELETE CASCADE ON UPDATE CASCADE,"
-              "FOREIGN KEY (NMAT) REFERENCES MATERIA(NMAT) ON DELETE CASCADE ON UPDATE CASCADE"
-              ")");
+          await db.execute("""
+              CREATE TABLE HORARIO(
+                  NHORARIO INTEGER PRIMARY KEY AUTOINCREMENT,
+                  NPROFESOR TEXT,
+                  NMAT TEXT,
+                  HORA TEXT,
+                  EDIFICIO TEXT,
+                  SALON TEXT,
+                  FOREIGN KEY (NPROFESOR) REFERENCES PROFESOR(NPROFESOR) 
+                          ON DELETE CASCADE ON UPDATE CASCADE,
+                  FOREIGN KEY (NMAT) REFERENCES MATERIA(NMAT) 
+                           ON DELETE CASCADE ON UPDATE CASCADE
+              );
+          """);
+
 
           await db.execute("CREATE TABLE ASISTENCIA("
               "IDASISTENCIA INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -148,33 +153,49 @@ class DB {
     );
   }
 
-  //Horario
-  static Future<int> insertarHorario(Horario h) async {
+  static Future<bool> existeProfesor(String id) async {
     final db = await _conexion();
-    return db.insert("HORARIO", h.toJSON(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    final r = await db.query("PROFESOR", where: "NPROFESOR = ?", whereArgs: [id], limit: 1);
+    return r.isNotEmpty;
+  }
+  static Future<bool> existeMateria(String id) async {
+    final db = await _conexion();
+    final r = await db.query("MATERIA", where: "NMAT = ?", whereArgs: [id], limit: 1);
+    return r.isNotEmpty;
   }
 
+
+  // INSERTAR
+  static Future<int> insertarHorario(Horario h) async {
+    final db = await _conexion();
+    // No mandamos NHORARIO en inserts:
+    return db.insert("HORARIO", h.toInsertMap());
+  }
+
+// MOSTRAR
   static Future<List<Horario>> mostrarHorarios() async {
     final db = await _conexion();
-    final data = await db.query("HORARIO");
+    final data = await db.query("HORARIO", orderBy: "NHORARIO DESC");
     return List.generate(data.length, (i) => Horario.fromMap(data[i]));
   }
 
+// ACTUALIZAR
   static Future<int> actualizarHorario(Horario h) async {
     final db = await _conexion();
     return db.update(
       "HORARIO",
-      h.toJSON(),
+      h.toJSON(), // aquí sí puede ir NHORARIO (igual al actual)
       where: "NHORARIO = ?",
       whereArgs: [h.NHORARIO],
     );
   }
 
+// ELIMINAR
   static Future<int> eliminarHorario(int id) async {
     final db = await _conexion();
     return db.delete("HORARIO", where: "NHORARIO = ?", whereArgs: [id]);
   }
+
 
 
 }

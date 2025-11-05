@@ -20,11 +20,6 @@ class _HorarioPageState extends State<HorarioPage> {
   bool modoEdicion = false;
   int? idEdicion;
 
-  Future<void> actualizarLista() async {
-    final temp = await DB.mostrarHorarios();
-    setState(() => horarios = temp);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -41,6 +36,15 @@ class _HorarioPageState extends State<HorarioPage> {
     super.dispose();
   }
 
+  // 🔄 Actualizar lista
+  Future<void> actualizarLista() async {
+    final lista = await DB.mostrarHorarios();
+    setState(() {
+      horarios = lista;
+    });
+  }
+
+  // 🧹 Limpiar campos
   void limpiarCampos() {
     nprofesor.clear();
     nmat.clear();
@@ -53,6 +57,7 @@ class _HorarioPageState extends State<HorarioPage> {
     });
   }
 
+  // 💾 Guardar o actualizar
   Future<void> guardarHorario() async {
     if (nprofesor.text.isEmpty ||
         nmat.text.isEmpty ||
@@ -61,42 +66,51 @@ class _HorarioPageState extends State<HorarioPage> {
         salon.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Debe llenar todos los campos"),
+          content: Text("Debe llenar todos los campos."),
           backgroundColor: Colors.black,
         ),
       );
       return;
     }
 
-    final h = Horario(
+    final nuevo = Horario(
       NHORARIO: idEdicion,
-      NPROFESOR: nprofesor.text,
-      NMAT: nmat.text,
-      HORA: hora.text,
-      EDIFICIO: edificio.text,
-      SALON: salon.text,
+      NPROFESOR: nprofesor.text.trim(),
+      NMAT: nmat.text.trim(),
+      HORA: hora.text.trim(),
+      EDIFICIO: edificio.text.trim(),
+      SALON: salon.text.trim(),
     );
 
-    if (modoEdicion) {
-      await DB.actualizarHorario(h);
+    try {
+      if (modoEdicion) {
+        await DB.actualizarHorario(nuevo);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Horario actualizado correctamente."),
+            backgroundColor: Colors.blue,
+          ),
+        );
+      } else {
+        await DB.insertarHorario(nuevo);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Horario agregado correctamente."),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+
+      limpiarCampos();
+      await actualizarLista();
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Horario actualizado correctamente"),
-          backgroundColor: Colors.blue,
-        ),
-      );
-    } else {
-      await DB.insertarHorario(h);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Horario agregado correctamente"),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: Text("Error: $e"),
+          backgroundColor: Colors.redAccent,
         ),
       );
     }
-
-    limpiarCampos();
-    actualizarLista();
   }
 
   @override
@@ -112,7 +126,7 @@ class _HorarioPageState extends State<HorarioPage> {
           ),
           const SizedBox(height: 20),
 
-          // Campos de texto
+          // Campo: ID Profesor
           TextField(
             controller: nprofesor,
             decoration: const InputDecoration(
@@ -122,6 +136,8 @@ class _HorarioPageState extends State<HorarioPage> {
             ),
           ),
           const SizedBox(height: 16),
+
+          // Campo: ID Materia
           TextField(
             controller: nmat,
             decoration: const InputDecoration(
@@ -131,6 +147,8 @@ class _HorarioPageState extends State<HorarioPage> {
             ),
           ),
           const SizedBox(height: 16),
+
+          // Campo: Hora
           TextField(
             controller: hora,
             decoration: const InputDecoration(
@@ -140,6 +158,8 @@ class _HorarioPageState extends State<HorarioPage> {
             ),
           ),
           const SizedBox(height: 16),
+
+          // Campo: Edificio
           TextField(
             controller: edificio,
             decoration: const InputDecoration(
@@ -149,6 +169,8 @@ class _HorarioPageState extends State<HorarioPage> {
             ),
           ),
           const SizedBox(height: 16),
+
+          // Campo: Salón
           TextField(
             controller: salon,
             decoration: const InputDecoration(
@@ -159,7 +181,7 @@ class _HorarioPageState extends State<HorarioPage> {
           ),
           const SizedBox(height: 20),
 
-          // Botones de acción
+          // Botones principales
           Row(
             children: [
               Expanded(
@@ -168,17 +190,13 @@ class _HorarioPageState extends State<HorarioPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        modoEdicion
-                            ? Icons.save_as_rounded
-                            : Icons.add_circle_outline,
-                      ),
+                      Icon(modoEdicion
+                          ? Icons.save_as_rounded
+                          : Icons.add_circle_outline),
                       const SizedBox(width: 6),
-                      Text(
-                        modoEdicion
-                            ? "Guardar cambios"
-                            : "Agregar horario",
-                      ),
+                      Text(modoEdicion
+                          ? "Guardar cambios"
+                          : "Agregar horario"),
                     ],
                   ),
                 ),
@@ -195,6 +213,7 @@ class _HorarioPageState extends State<HorarioPage> {
           const SizedBox(height: 20),
           const Divider(),
           const SizedBox(height: 10),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -221,27 +240,31 @@ class _HorarioPageState extends State<HorarioPage> {
                 return Card(
                   elevation: 2,
                   child: ListTile(
-                    leading: const Icon(Icons.schedule, color: Colors.deepPurple),
-                    title: Text("Profesor: ${h.NPROFESOR} | Materia: ${h.NMAT}"),
+                    leading: const Icon(Icons.schedule,
+                        color: Colors.deepPurpleAccent),
+                    title: Text(
+                        "Profesor: ${h.NPROFESOR} | Materia: ${h.NMAT}"),
                     subtitle: Text(
                         "Hora: ${h.HORA}\nEdificio: ${h.EDIFICIO} | Salón: ${h.SALON}"),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        // Botón editar
                         IconButton(
                           icon: const Icon(Icons.edit, color: Colors.orange),
                           onPressed: () {
                             setState(() {
+                              modoEdicion = true;
                               idEdicion = h.NHORARIO;
                               nprofesor.text = h.NPROFESOR;
                               nmat.text = h.NMAT;
                               hora.text = h.HORA;
                               edificio.text = h.EDIFICIO;
                               salon.text = h.SALON;
-                              modoEdicion = true;
                             });
                           },
                         ),
+                        // Botón eliminar
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
