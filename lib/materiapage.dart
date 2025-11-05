@@ -17,13 +17,11 @@ class _MateriapageState extends State<Materiapage> {
   List<Materia> materias = [];
   bool modoEdicion = false; // indica si estamos editando o agregando
 
-  // Generar ID aleatorio
   void generarID() {
     int id = Random().nextInt(900) + 100;
     nmat.text = id.toString();
   }
 
-  // Obtener todas las materias
   Future<void> actualizarLista() async {
     final temp = await DB.mostrarMaterias();
     setState(() {
@@ -86,7 +84,6 @@ class _MateriapageState extends State<Materiapage> {
     actualizarLista();
   }
 
-  // Limpiar formulario
   void limpiarCampos() {
     descripcion.clear();
     generarID();
@@ -144,8 +141,16 @@ class _MateriapageState extends State<Materiapage> {
                       const SizedBox(width: 6),
                       Text(modoEdicion
                           ? "Guardar cambios"
-                          : "Agregar materia"),
+                          : "Agregar materia", style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 17,
+                            letterSpacing: 1.5
+                      ),
+                      ),
                     ],
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.blue,
                   ),
                 ),
               ),

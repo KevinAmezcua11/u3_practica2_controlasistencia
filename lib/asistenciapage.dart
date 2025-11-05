@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:u3_practica2_controlasistencia/actualizarasistencia.dart';
 import 'package:u3_practica2_controlasistencia/asistencia.dart';
 import 'package:u3_practica2_controlasistencia/basedatos.dart';
+import 'package:u3_practica2_controlasistencia/horario.dart';
 
 class AsistenciaPage extends StatefulWidget {
   const AsistenciaPage({super.key});
@@ -17,6 +19,9 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
   int asistenciaValue = 1;
 
   List<Asistencia> datos = [];
+  List<Horario> horarios = [];
+
+  int? idSeleccionado;
 
   void actualizarLista() async {
     List<Asistencia> temp = await DB.mostrarAsistencias();
@@ -26,9 +31,17 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
     });
   }
 
+  void cargarHorarios() async {
+    List<Horario> temp = await DB.mostrarHorarios();
+    setState(() {
+      horarios = temp;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    cargarHorarios();
     actualizarLista();
   }
 
@@ -48,19 +61,42 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
             ],
           ),
           SizedBox(height: 16,),
-          TextField(
-            controller: nhorario,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: "ID Horario",
+          Row(
+            children: [
+              Text(
+                "ID Horario:",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  letterSpacing: 1,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 10,),
+          DropdownButtonFormField(
+            value: idSeleccionado,
+            items: horarios.map((h) {
+              return DropdownMenuItem<int>(
+                value: h.NHORARIO,
+                child: Text("ID: ${h.NHORARIO} | Hora: ${h.HORA} (${h.EDIFICIO})"),
+              );
+            }).toList(),
+            onChanged: (valor) {
+              setState(() {
+                idSeleccionado = valor;
+              });
+            },
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
+              labelText: "Seleccione un horario",
             ),
           ),
           SizedBox(height: 16,),
           TextField(
             controller: fecha,
             decoration: InputDecoration(
-              labelText: "Fecha (AAAA-MM-DD)",
+              labelText: "AAAA-MM-DD",
               border: OutlineInputBorder(),
             ),
           ),
@@ -113,15 +149,11 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
               Expanded(
                 child: FilledButton(
                   onPressed: () {
-                    if (nhorario.text.trim().isEmpty || fecha.text.trim().isEmpty) {
+                    if (idSeleccionado == null || fecha.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text("Debe llenar todos los campos",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold
-                            ),
+                            style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           backgroundColor: Colors.black,
                         ),
@@ -129,10 +161,8 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
                       return;
                     }
 
-                    int horario = int.tryParse(nhorario.text) ?? 0;
-
                     Asistencia a = Asistencia(
-                      NHORARIO: horario,
+                      NHORARIO: idSeleccionado!,
                       FECHA: fecha.text,
                       ASISTENCIA: asistenciaValue,
                     );
@@ -229,25 +259,107 @@ class _AsistenciaPageState extends State<AsistenciaPage> {
                           backgroundColor: Colors.blueGrey[100],
                           radius: 22,
                         ),
-                        title: Text("ID: ${datos[i].IDASISTENCIA ?? '-'}"),
+                        title: Text("ID: ${datos[i].IDASISTENCIA ?? '-'}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Horario: ${datos[i].NHORARIO}"),
-                            Text("Fecha: ${datos[i].FECHA}"),
-                            Text("Asistencia: ${datos[i].ASISTENCIA == 1 ? 'Sí' : 'No'}"),
+                            Text("Horario: ${datos[i].NHORARIO}",
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            Text("Fecha: ${datos[i].FECHA}",
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                            Text("Asistencia: ${datos[i].ASISTENCIA == 1 ? 'Sí' : 'No'}",
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
                           ],
                         ),
                         trailing: IconButton(
-                          onPressed: () {
+                          onPressed: (){
                             DB.eliminarAsistencia(datos[i].IDASISTENCIA!)
                                 .then((res) {
                               actualizarLista();
+                              showDialog(
+                                  context: context,
+                                  builder: (x) {
+                                    return AlertDialog(
+                                      title: Row(
+                                        children: [
+                                          Icon(Icons.warning, color: Colors.yellow[800],),
+                                          SizedBox(width: 6,),
+                                          Text("¡Advertencia!",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      content: Text("¿Estas seguro de eliminar este registro?",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      actions: [
+                                        FilledButton(
+                                            onPressed: (){
+                                              actualizarLista();
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                content: Text("Asistencia eliminado correctamente",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15,
+                                                      fontWeight: FontWeight.bold
+                                                  ),
+                                                ),
+                                                backgroundColor: Colors.redAccent,
+                                              )
+                                              );
+                                              Navigator.pop(context);
+                                            },
+                                            style: FilledButton.styleFrom(
+                                                backgroundColor: Colors.red,
+                                                padding: EdgeInsets.only(left: 15, right: 15)
+                                            ),
+                                            child: Text("Aceptar", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)
+                                        ),
+                                        TextButton(
+                                            onPressed: (){
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text("Cancelar", style: TextStyle(color: Colors.black87))
+                                        ),
+                                      ],
+                                    );
+                                  }
+                              );
                             });
                           },
-                          icon: Icon(Icons.delete),
-                          color: Colors.red,
+                          icon: Icon(Icons.delete), color: Colors.red,
                         ),
+                        onTap: () async {
+                          final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (x) => actualizarasistencia(asist: datos[i]))
+                          );
+
+                          if (result == true) {
+                            actualizarLista();
+                          }
+                        },
                       ),
                     ),
                   );

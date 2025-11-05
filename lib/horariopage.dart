@@ -36,7 +36,6 @@ class _HorarioPageState extends State<HorarioPage> {
     super.dispose();
   }
 
-  // 🔄 Actualizar lista
   Future<void> actualizarLista() async {
     final lista = await DB.mostrarHorarios();
     setState(() {
@@ -44,7 +43,6 @@ class _HorarioPageState extends State<HorarioPage> {
     });
   }
 
-  // 🧹 Limpiar campos
   void limpiarCampos() {
     nprofesor.clear();
     nmat.clear();
@@ -57,7 +55,6 @@ class _HorarioPageState extends State<HorarioPage> {
     });
   }
 
-  // 💾 Guardar o actualizar
   Future<void> guardarHorario() async {
     if (nprofesor.text.isEmpty ||
         nmat.text.isEmpty ||
@@ -181,7 +178,6 @@ class _HorarioPageState extends State<HorarioPage> {
           ),
           const SizedBox(height: 20),
 
-          // Botones principales
           Row(
             children: [
               Expanded(
@@ -196,8 +192,16 @@ class _HorarioPageState extends State<HorarioPage> {
                       const SizedBox(width: 6),
                       Text(modoEdicion
                           ? "Guardar cambios"
-                          : "Agregar horario"),
+                          : "Agregar horario", style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          letterSpacing: 1.5
+                      ),
+                      ),
                     ],
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.blue,
                   ),
                 ),
               ),

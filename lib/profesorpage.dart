@@ -243,7 +243,6 @@ class _ProfesorPageState extends State<ProfesorPage> {
                             content: Text("Toca una tarjeta para editar los datos del profesor.",
                               style: TextStyle(
                                   fontSize: 16,
-                                  height: 1.4
                               ),
                             ),
                             actions: [
@@ -310,10 +309,24 @@ class _ProfesorPageState extends State<ProfesorPage> {
                                       context: context,
                                       builder: (x) {
                                         return AlertDialog(
-                                          title: Text("Advertencia!"),
-                                          content: Text("¿Estas seguro de eliminar este registro?"),
+                                          title: Row(
+                                            children: [
+                                              Icon(Icons.warning, color: Colors.yellow[800],),
+                                              SizedBox(width: 6,),
+                                              Text("¡Advertencia!",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          content: Text("¿Estas seguro de eliminar este registro?",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
                                           actions: [
-                                            TextButton(
+                                            FilledButton(
                                                 onPressed: (){
                                                   actualizarLista();
                                                   ScaffoldMessenger.of(context)
@@ -323,13 +336,18 @@ class _ProfesorPageState extends State<ProfesorPage> {
                                                           color: Colors.white,
                                                           fontSize: 15,
                                                           fontWeight: FontWeight.bold
-                                                      ),),
+                                                      ),
+                                                    ),
                                                     backgroundColor: Colors.redAccent,
                                                   )
                                                   );
                                                   Navigator.pop(context);
                                                 },
-                                                child: Text("Aceptar", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),)
+                                                style: FilledButton.styleFrom(
+                                                  backgroundColor: Colors.red,
+                                                  padding: EdgeInsets.only(left: 15, right: 15)
+                                                ),
+                                                child: Text("Aceptar", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),)
                                             ),
                                             TextButton(
                                                 onPressed: (){

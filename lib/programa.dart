@@ -22,7 +22,6 @@ class _programaState extends State<programa> {
     "Asistencia",
   ];
 
-  // Resultados de consultas
   List<Map<String, dynamic>> resultados = [];
   bool cargandoConsulta = false;
 
@@ -126,7 +125,7 @@ class _programaState extends State<programa> {
               ),
               const SizedBox(height: 20),
 
-              // 🔹 Sección de tarjetas (sin cambios)
+              // Sección de tarjetas
               seccionTarjetas(context),
 
               const SizedBox(height: 15),
@@ -150,11 +149,15 @@ class _programaState extends State<programa> {
                     resultados = res;
                     cargandoConsulta = false;
                   });
-                  setStateLocal(() {}); // 🔥 fuerza actualización interna
+                  setStateLocal(() {});
                 },
-                icon: const Icon(Icons.search),
+                icon: const Icon(Icons.search, color: Colors.blue,),
                 label: const Text(
-                    "Profesores que tienen clase a las 8:00 am en el edificio UD"),
+                    "Profesores que tienen clase a las 8:00 am en el edificio UD",
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
+                ),
               ),
 
               const SizedBox(height: 6),
@@ -168,9 +171,13 @@ class _programaState extends State<programa> {
                   });
                   setStateLocal(() {});
                 },
-                icon: const Icon(Icons.person_search),
+                icon: const Icon(Icons.person_search, color: Colors.blue,),
                 label: const Text(
-                    "Profesores que asistieron el 08/02/2022 a clase"),
+                    "Profesores que asistieron el 08/02/2022 a clase",
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
+                ),
               ),
 
               const SizedBox(height: 6),
@@ -184,9 +191,13 @@ class _programaState extends State<programa> {
                   });
                   setStateLocal(() {});
                 },
-                icon: const Icon(Icons.menu_book),
+                icon: const Icon(Icons.menu_book, color: Colors.blue,),
                 label:
-                const Text("Materias y horarios asignados por profesor"),
+                const Text("Materias y horarios asignados por profesor",
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
+                ),
               ),
 
               const SizedBox(height: 16),
