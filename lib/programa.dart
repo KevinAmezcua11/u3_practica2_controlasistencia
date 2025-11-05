@@ -107,91 +107,127 @@ class _programaState extends State<programa> {
       case 1:
         return const HorarioPage();
       case 2:
-        return ListView(
-          padding: const EdgeInsets.all(25),
-          children: [
-            const Text(
-              "¡Bienvenido al sistema de control de asistencia!",
-              style: TextStyle(
+        return StatefulBuilder(
+          builder: (context, setStateLocal) => ListView(
+            padding: const EdgeInsets.all(25),
+            children: [
+              const Text(
+                "¡Bienvenido al sistema de control de asistencia!",
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
-                  letterSpacing: 1),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              "Administra profesores, horarios y asistencias desde un solo lugar.",
-              style: TextStyle(fontSize: 16, color: Colors.black87),
-            ),
-            const SizedBox(height: 20),
+                  letterSpacing: 1,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                "Administra profesores, horarios y asistencias desde un solo lugar.",
+                style: TextStyle(fontSize: 16, color: Colors.black87),
+              ),
+              const SizedBox(height: 20),
 
-            // Tarjetas ya existentes
-            seccionTarjetas(context),
+              // 🔹 Sección de tarjetas (sin cambios)
+              seccionTarjetas(context),
 
-            const SizedBox(height: 15),
-            const Divider(thickness: 1.5),
-            const SizedBox(height: 8),
+              const SizedBox(height: 15),
+              const Divider(thickness: 1.5),
+              const SizedBox(height: 8),
 
-            const Text(
-              "Consultas avanzadas:",
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87),
-            ),
-            const SizedBox(height: 8),
+              const Text(
+                "Consultas avanzadas:",
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87),
+              ),
+              const SizedBox(height: 8),
 
-            ElevatedButton.icon(
-              onPressed: ejecutarConsulta1,
-              icon: const Icon(Icons.search),
-              label: const Text(
-                  "Profesores que tienen clase a las 8:00 am en el edificio UD"),
-            ),
-            const SizedBox(height: 6),
-            ElevatedButton.icon(
-              onPressed: ejecutarConsulta2,
-              icon: const Icon(Icons.person_search),
-              label: const Text(
-                  "Profesores que asistieron el 08/02/2022 a clase"),
-            ),
-            const SizedBox(height: 6),
-            ElevatedButton.icon(
-              onPressed: ejecutarConsulta3,
-              icon: const Icon(Icons.menu_book),
-              label:
-              const Text("Materias y horarios asignados por profesor"),
-            ),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  setState(() => cargandoConsulta = true);
+                  final res = await DB.profesoresClase8UD();
+                  setState(() {
+                    resultados = res;
+                    cargandoConsulta = false;
+                  });
+                  setStateLocal(() {}); // 🔥 fuerza actualización interna
+                },
+                icon: const Icon(Icons.search),
+                label: const Text(
+                    "Profesores que tienen clase a las 8:00 am en el edificio UD"),
+              ),
 
-            const SizedBox(height: 16),
-            cargandoConsulta
-                ? const Center(child: CircularProgressIndicator())
-                : resultados.isEmpty
-                ? const Text(
-              "Sin resultados por ahora.",
-              style: TextStyle(color: Colors.black54),
-            )
-                : ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: resultados.length,
-              itemBuilder: (context, i) {
-                final fila = resultados[i];
-                return Card(
-                  child: ListTile(
-                    title: Text(
-                      fila['NOMBRE'] ??
-                          fila['PROFESOR'] ??
-                          "Sin nombre",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold),
+              const SizedBox(height: 6),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  setState(() => cargandoConsulta = true);
+                  final res = await DB.profesoresAsistieron("08/02/2022");
+                  setState(() {
+                    resultados = res;
+                    cargandoConsulta = false;
+                  });
+                  setStateLocal(() {});
+                },
+                icon: const Icon(Icons.person_search),
+                label: const Text(
+                    "Profesores que asistieron el 08/02/2022 a clase"),
+              ),
+
+              const SizedBox(height: 6),
+              ElevatedButton.icon(
+                onPressed: () async {
+                  setState(() => cargandoConsulta = true);
+                  final res = await DB.materiasPorProfesor();
+                  setState(() {
+                    resultados = res;
+                    cargandoConsulta = false;
+                  });
+                  setStateLocal(() {});
+                },
+                icon: const Icon(Icons.menu_book),
+                label:
+                const Text("Materias y horarios asignados por profesor"),
+              ),
+
+              const SizedBox(height: 16),
+
+              cargandoConsulta
+                  ? const Center(child: CircularProgressIndicator())
+                  : resultados.isEmpty
+                  ? const Text(
+                "Sin resultados por ahora.",
+                style: TextStyle(color: Colors.black54),
+              )
+                  : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: resultados.length,
+                itemBuilder: (context, i) {
+                  final fila = resultados[i];
+                  return Card(
+                    color: Colors.white,
+                    elevation: 2,
+                    margin: const EdgeInsets.symmetric(vertical: 5),
+                    child: ListTile(
+                      title: Text(
+                        fila['NOMBRE'] ??
+                            fila['PROFESOR'] ??
+                            "Sin nombre",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        fila.entries
+                            .map((e) => "${e.key}: ${e.value}")
+                            .join("\n"),
+                        style: const TextStyle(fontSize: 13),
+                      ),
                     ),
-                    subtitle: Text(fila.entries
-                        .map((e) => "${e.key}: ${e.value}")
-                        .join("\n")),
-                  ),
-                );
-              },
-            ),
-          ],
+                  );
+                },
+              ),
+            ],
+          ),
         );
       case 3:
         return const ProfesorPage();
