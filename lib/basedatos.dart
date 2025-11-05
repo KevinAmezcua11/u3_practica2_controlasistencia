@@ -2,6 +2,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:u3_practica2_controlasistencia/profesor.dart';
 import 'package:u3_practica2_controlasistencia/asistencia.dart';
+import 'package:u3_practica2_controlasistencia/horario.dart';
+import 'package:u3_practica2_controlasistencia/materia.dart';
 
 class DB {
   static Future<Database> _conexion() async {
@@ -17,12 +19,12 @@ class DB {
               "NOMBRE TEXT,"
               "CARRERA TEXT"
               ")");
-          
+
           await db.execute("CREATE TABLE MATERIA("
               "NMAT TEXT PRIMARY KEY,"
               "DESCRIPCION TEXT"
               ")");
-          
+
           await db.execute("CREATE TABLE HORARIO("
               "NHORARIO INTEGER PRIMARY KEY AUTOINCREMENT,"
               "NPROFESOR TEXT,"
@@ -117,4 +119,63 @@ class DB {
 
     return base.delete("ASISTENCIA", where: "IDASISTENCIA = ?", whereArgs: [IDASISTENCIA]);
   }
+
+  //Materia
+  static Future<int> insertarMateria(Materia m) async {
+    final db = await _conexion();
+    return db.insert("MATERIA", m.toJSON(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  static Future<List<Materia>> mostrarMaterias() async {
+    final db = await _conexion();
+    final data = await db.query("MATERIA");
+    return List.generate(data.length, (i) => Materia.fromMap(data[i]));
+  }
+
+  static Future<int> eliminarMateria(String nmat) async {
+    final db = await _conexion();
+    return db.delete("MATERIA", where: "NMAT = ?", whereArgs: [nmat]);
+  }
+
+  static Future<int> actualizarMateria(Materia m) async {
+    final db = await _conexion();
+    return db.update(
+      "MATERIA",
+      m.toJSON(),
+      where: "NMAT = ?",
+      whereArgs: [m.NMAT],
+    );
+  }
+
+  //Horario
+  static Future<int> insertarHorario(Horario h) async {
+    final db = await _conexion();
+    return db.insert("HORARIO", h.toJSON(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  static Future<List<Horario>> mostrarHorarios() async {
+    final db = await _conexion();
+    final data = await db.query("HORARIO");
+    return List.generate(data.length, (i) => Horario.fromMap(data[i]));
+  }
+
+  static Future<int> actualizarHorario(Horario h) async {
+    final db = await _conexion();
+    return db.update(
+      "HORARIO",
+      h.toJSON(),
+      where: "NHORARIO = ?",
+      whereArgs: [h.NHORARIO],
+    );
+  }
+
+  static Future<int> eliminarHorario(int id) async {
+    final db = await _conexion();
+    return db.delete("HORARIO", where: "NHORARIO = ?", whereArgs: [id]);
+  }
+
+
 }
+
