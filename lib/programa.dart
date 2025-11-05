@@ -100,20 +100,20 @@ class _programaState extends State<programa> {
         return ListView(
           padding: EdgeInsets.all(25),
           children: [
-            Text("Bienvenido al sistema de control de asistencia",
+            Text("¡Bienvenido al sistema de control de asistencia!",
               style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1,
               ),
             ),
 
-            SizedBox(height: 5,),
-            Divider(),
-            SizedBox(height: 5,),
+            SizedBox(height: 10),
 
-            Text("Gestiona toda la información fácilmente desde un solo lugar.",
+            Text("Administra profesores, horarios y asistencias de manera fácil y rápida desde un solo lugar.",
               style: TextStyle(
-                fontSize: 16
+                fontSize: 16,
+                color: Colors.black87,
               ),
             ),
 
@@ -149,10 +149,11 @@ class _programaState extends State<programa> {
                             });
                           },
                           icon: CircleAvatar(
-                            backgroundColor: Colors.grey[200],
+                            radius: 18,
+                            backgroundColor: Colors.black,
                             child: Icon(
                               Icons.arrow_forward_outlined,
-                              color: Colors.blue,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -213,10 +214,11 @@ class _programaState extends State<programa> {
                             });
                           },
                           icon: CircleAvatar(
-                            backgroundColor: Colors.grey[200],
+                            radius: 18,
+                            backgroundColor: Colors.black,
                             child: Icon(
                               Icons.arrow_forward_outlined,
-                              color: Colors.blue,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -277,10 +279,11 @@ class _programaState extends State<programa> {
                             });
                           },
                           icon: CircleAvatar(
-                            backgroundColor: Colors.grey[200],
+                            radius: 18,
+                            backgroundColor: Colors.black,
                             child: Icon(
                               Icons.arrow_forward_outlined,
-                              color: Colors.blue,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -341,10 +344,11 @@ class _programaState extends State<programa> {
                             });
                           },
                           icon: CircleAvatar(
-                            backgroundColor: Colors.grey[200],
+                            radius: 18,
+                            backgroundColor: Colors.black,
                             child: Icon(
                               Icons.arrow_forward_outlined,
-                              color: Colors.blue,
+                              color: Colors.white,
                             ),
                           ),
                         ),
@@ -375,11 +379,27 @@ class _programaState extends State<programa> {
               ),
             ),
 
-            SizedBox(height: 10,),
+            SizedBox(height: 8),
+            Divider(thickness: 1.2),
+            SizedBox(height: 8),
 
-            Text("Consultas",
+            Text("Consultas:",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            SizedBox(height: 6),
+            Text("Profesores que imparten clase a las 8:00 a.m. en el edificio UD:",
               style: TextStyle(
                 fontSize: 16
+              ),
+            ),
+            SizedBox(height: 10),
+            Text("Profesores que asistieron a clase el día 08/02/2022:",
+              style: TextStyle(
+                  fontSize: 16
               ),
             ),
           ],
