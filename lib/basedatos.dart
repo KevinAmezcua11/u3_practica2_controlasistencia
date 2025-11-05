@@ -8,12 +8,12 @@ import 'package:u3_practica2_controlasistencia/materia.dart';
 class DB {
   static Future<Database> _conexion() async {
     return openDatabase(
-      join(await getDatabasesPath(), "base1.db"),
-      version: 1,
-      onConfigure: (db) async {
-        await db.execute("PRAGMA foreign_keys = ON");
-      },
-      onCreate: (db, version) async {
+        join(await getDatabasesPath(), "base1.db"),
+        version: 1,
+        onConfigure: (db) async {
+          await db.execute("PRAGMA foreign_keys = ON");
+        },
+        onCreate: (db, version) async {
           await db.execute("CREATE TABLE PROFESOR("
               "NPROFESOR TEXT PRIMARY KEY,"
               "NOMBRE TEXT,"
@@ -48,7 +48,7 @@ class DB {
               "ASISTENCIA INTEGER,"
               "FOREIGN KEY(NHORARIO) REFERENCES HORARIO(NHORARIO) ON DELETE CASCADE ON UPDATE CASCADE"
               ")");
-      }
+        }
     );
   }
 
@@ -66,7 +66,7 @@ class DB {
 
     return List.generate(
         temp.length,
-        (contador) {
+            (contador) {
           return Profesor(
               NPROFESOR: temp[contador]['NPROFESOR'],
               NOMBRE: temp[contador]['NOMBRE'],
@@ -197,6 +197,42 @@ class DB {
   }
 
 
+  // CONSULTA 1: Profesores con clase a las 8:00 en edificio UD
+  static Future<List<Map<String, dynamic>>> profesoresClase8UD() async {
+    final db = await _conexion();
+    return await db.rawQuery('''
+    SELECT P.NOMBRE, H.HORA, H.EDIFICIO, H.SALON
+    FROM PROFESOR P
+    INNER JOIN HORARIO H ON P.NPROFESOR = H.NPROFESOR
+    WHERE H.HORA LIKE '%8:00%' AND H.EDIFICIO = 'UD'
+  ''');
+  }
+
+// CONSULTA 2: Profesores que asistieron en una fecha específica
+  static Future<List<Map<String, dynamic>>> profesoresAsistieron(String fecha) async {
+    final db = await _conexion();
+    return await db.rawQuery('''
+    SELECT DISTINCT P.NOMBRE, M.DESCRIPCION, A.FECHA
+    FROM PROFESOR P
+    INNER JOIN HORARIO H ON P.NPROFESOR = H.NPROFESOR
+    INNER JOIN MATERIA M ON M.NMAT = H.NMAT
+    INNER JOIN ASISTENCIA A ON A.NHORARIO = H.NHORARIO
+    WHERE A.FECHA = ?
+    AND A.ASISTENCIA = 1
+  ''', [fecha]);
+  }
+
+// CONSULTA 3: Materias y horarios por profesor
+  static Future<List<Map<String, dynamic>>> materiasPorProfesor() async {
+    final db = await _conexion();
+    return await db.rawQuery('''
+    SELECT P.NOMBRE AS PROFESOR, M.DESCRIPCION AS MATERIA, H.HORA, H.SALON
+    FROM PROFESOR P
+    INNER JOIN HORARIO H ON P.NPROFESOR = H.NPROFESOR
+    INNER JOIN MATERIA M ON M.NMAT = H.NMAT
+    ORDER BY P.NOMBRE
+  ''');
+  }
+
 
 }
-
