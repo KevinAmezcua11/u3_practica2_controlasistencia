@@ -161,7 +161,7 @@ class _programaState extends State<programa> {
               ElevatedButton.icon(
                 onPressed: () async {
                   setState(() => cargandoConsulta = true);
-                  final res = await DB.profesoresAsistieron("08/02/2022");
+                  final res = await DB.profesoresAsistieron("2022-02-08");
                   setState(() {
                     resultados = res;
                     cargandoConsulta = false;
